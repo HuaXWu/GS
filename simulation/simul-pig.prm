@@ -1,0 +1,63 @@
+/*******************************
+ **     Global parameters     **
+ *******************************/
+title = "600k SNP panel";
+nrep  = 1;                    //Number of replicates
+h2    = 0.5;                  //Heritability
+qtlh2 = 0.;                  //QTL heritability
+phvar = 1.0;                  //Phenotypic variance
+
+/*******************************
+ **   Historical population   **
+ *******************************/
+begin_hp;
+   hg_size = 100 [0] 2000 [1000];         //Size of the historical generations
+   nmlhg = 1000;                         //Number of males in the last generation
+end_hp;
+
+/*******************************
+ **        Populations        **
+ *******************************/
+begin_pop = "p1";
+   begin_founder;
+      male   [n = 200, pop = "hp"];
+      female [n = 200, pop = "hp"];
+   end_founder;
+   ls  = 10;                  //Litter size
+   pmp = 0.5 /fix;            //Proportion of male progeny
+   ng  = 16;                  //Number of generations
+   md  = rnd;                 //random mating
+   sd  = rnd;                 //random selection
+   begin_popoutput;
+        data;
+        stat;
+        genotype /gen 14 15 16;
+   end_popoutput;
+end_pop;
+
+/*******************************
+ **          Genome           **
+ *******************************/
+begin_genome;
+   begin_chr = 19;
+      chrlen = 2603;          //Chromosome length
+      nmloci = 15000;         //Number of markers
+      mpos   = rnd;           //Marker positions
+      nma    = all 2;         //Number of marker alleles
+      maf    = eql;           //Marker allele frequencies
+      nqloci = 25;            //Number of QTL
+      qpos   = rnd;           //QTL positions
+      nqa    = all 2;         //Number of QTL alleles
+      qaf    = eql;           //QTL allele frequencies
+      qae    = rndg 0.4;      //QTL allele effects	  
+   end_chr;
+      mmutr  = 2.5e-5 /recurrent; //Marker mutation rate
+      qmutr  = 2.5e-5;            //QTL mutation rate
+end_genome;
+
+/*******************************
+ **       Output options      **
+ *******************************/
+begin_output;
+   linkage_map;
+end_output;
