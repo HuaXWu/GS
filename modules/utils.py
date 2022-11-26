@@ -7,17 +7,16 @@ import math
 import json
 
 
-# MSE
-
-
-# 交叉熵
-
+"""
+date 2022.03.01
+by wuhx  utils
+"""
 
 def train_one_epoch_classify(model, optimizer, data_loader, device, epoch, lr_scheduler):
     loss_function = torch.nn.CrossEntropyLoss()
     model.train()
-    accu_loss = torch.zeros(1).to(device)  # 累计损失
-    accu_num = torch.zeros(1).to(device)  # 累计预测正确的样本数
+    accu_loss = torch.zeros(1).to(device)  # all loss
+    accu_num = torch.zeros(1).to(device)  # all pcc
 
     sample_num = 0
     data_loader = tqdm(data_loader, file=sys.stdout)
@@ -58,8 +57,8 @@ def evaluate_classify(model, data_loader, device, epoch):
     loss_function = torch.nn.CrossEntropyLoss()
     model.eval()
 
-    accu_num = torch.zeros(1).to(device)  # 累计预测正确的样本数
-    accu_loss = torch.zeros(1).to(device)  # 累计损失
+    accu_num = torch.zeros(1).to(device)
+    accu_loss = torch.zeros(1).to(device)
 
     sample_num = 0
     data_loader = tqdm(data_loader, file=sys.stdout)
@@ -88,9 +87,9 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, lr_scheduler):
     loss_function = torch.nn.MSELoss()
     model.train()
     step = 0
-    accu_loss = torch.zeros(1).to(device)  # 累计损失
-    accu_corr = torch.zeros(1).to(device)  # 累计准确率
-    var_info = 0  # 差的方差
+    accu_loss = torch.zeros(1).to(device)
+    accu_corr = torch.zeros(1).to(device)
+    var_info = 0
     train_bar = tqdm(data_loader, file=sys.stdout)
     for step, data in enumerate(train_bar):
         x_train, y_train = data
@@ -127,9 +126,9 @@ def evaluate(model, data_loader, device, epoch, all_epoch):
     loss_function = torch.nn.MSELoss()
     model.eval()
     step = 0
-    accu_loss = torch.zeros(1).to(device)  # 累计损失
-    accu_corr = torch.zeros(1).to(device)  # 累计准确率
-    var_info = 0  # 差的方差
+    accu_loss = torch.zeros(1).to(device)
+    accu_corr = torch.zeros(1).to(device)
+    var_info = 0
     valid_bar = tqdm(data_loader, file=sys.stdout)
     for step, data in enumerate(valid_bar):
         x_test, y_test = data
@@ -146,13 +145,7 @@ def evaluate(model, data_loader, device, epoch, all_epoch):
                                                                                                    all_epoch, loss,
                                                                                                    corr, var)
 
-        # early_stopping(loss, model)
-        # # 若满足 early stopping 要求
-        # if early_stopping.early_stop:
-        #     print("Early stopping")
-        #     break
-        # # 获得 会自动加载结果最好时候的模型参数。
-        # model.load_state_dict(torch.load('checkpoint.pt'))
+
     return accu_loss / (step + 1), accu_corr / (step + 1), var_info/ (step + 1),
 
 
@@ -161,6 +154,9 @@ def __variance__(y_label, y_predict):
     return np.var(info)
 
 
+"""
+ get learning-rate by all epochs and now steps.
+"""
 def create_lr_scheduler(optimizer,
                         num_step: int,
                         epochs: int,
@@ -174,28 +170,23 @@ def create_lr_scheduler(optimizer,
 
     def f(x):
         """
-        根据step数返回一个学习率倍率因子，
-        注意在训练开始之前，pytorch会提前调用一次lr_scheduler.step()方法
         """
         if warmup is True and x <= (warmup_epochs * num_step):
             alpha = float(x) / (warmup_epochs * num_step)
-            # warmup过程中lr倍率因子从warmup_factor -> 1
+            # warmup
             return warmup_factor * (1 - alpha) + alpha
         else:
             current_step = (x - warmup_epochs * num_step)
             cosine_steps = (epochs - warmup_epochs) * num_step
-            # warmup后lr倍率因子从1 -> end_factor
             return ((1 + math.cos(current_step * math.pi / cosine_steps)) / 2) * (1 - end_factor) + end_factor
 
     return torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=f)
 
 
 def get_params_groups(model: torch.nn.Module, weight_decay: float = 1e-5):
-    # 记录optimize要训练的权重参数
     parameter_group_vars = {"decay": {"params": [], "weight_decay": weight_decay},
                             "no_decay": {"params": [], "weight_decay": 0.}}
 
-    # 记录对应的权重名称
     parameter_group_names = {"decay": {"params": [], "weight_decay": weight_decay},
                              "no_decay": {"params": [], "weight_decay": 0.}}
 

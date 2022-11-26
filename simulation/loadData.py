@@ -8,20 +8,15 @@ import feather
 
 
 def load_data(random_state):
-
-    # 预训练
     # X = np.load("/root/autodl-tmp/data/simulate_data/gen_14_one_hot.npy")
     # Y = feather.read_dataframe("/root/autodl-tmp/data/simulate_data/label14.feather")
     # x_train_test, x_valid, y_train_test, y_valid = train_test_split(X, Y, random_state=random_state, test_size=0.1)
     # x_train, x_test, y_train, y_test = train_test_split(x_train_test, y_train_test, random_state=random_state,
     #                                                     test_size=0.1)
 
-    # 训练
     X = np.load("/root/autodl-tmp/data/simulate_data/gen_15_one_hot.npy")
     Y = feather.read_dataframe("/root/autodl-tmp/data/simulate_data/label15.feather")
-    # 总共2000个样本，划分1200个样本做训练集和测试集，800个样本做预训练集合
     x_train_test, x_valid, y_train_test, y_valid = train_test_split(X, Y, random_state=random_state, test_size=0.2)
-    # 剩余1200个样本， 重新划分 240个做测试集，960个做训练集
     x_train, x_test, y_train, y_test = train_test_split(x_train_test, y_train_test, random_state=random_state,
                                                         test_size=1/3)
     scalar = MinMaxScaler()

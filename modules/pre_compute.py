@@ -2,8 +2,13 @@ import numpy as np
 import cv2
 import os
 
+"""
+date 2022.03.01
+by wuhx  calculate the means and std
+"""
+
 # img_h, img_w = 32, 32
-img_h, img_w = 224, 224  # 根据自己数据集适当调整，影响不大
+img_h, img_w = 224, 224
 means, stdevs = [], []
 img_list = []
 
@@ -24,11 +29,11 @@ imgs = np.concatenate(img_list, axis=3)
 imgs = imgs.astype(np.float32) / 255.
 
 for i in range(3):
-    pixels = imgs[:, :, i, :].ravel()  # 拉成一行
+    pixels = imgs[:, :, i, :].ravel()
     means.append(np.mean(pixels))
     stdevs.append(np.std(pixels))
 
-# BGR --> RGB ， CV读取的需要转换，PIL读取的不用转换
+# BGR --> RGB
 means.reverse()
 stdevs.reverse()
 

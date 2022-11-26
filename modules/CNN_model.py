@@ -4,7 +4,10 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-
+"""
+date 2022.04.05
+by wuhx cnn model
+"""
 class CNNModel(nn.Module):
     def __init__(self, num_classes: int):
         super(CNNModel, self).__init__()
@@ -17,8 +20,8 @@ class CNNModel(nn.Module):
                 padding=3,
                 bias=False
             ),
-            nn.BatchNorm2d(64),  # 批量归一化 (5*5*16)
-            nn.LeakyReLU(inplace=True),  # 激活函数
+            nn.BatchNorm2d(64),  # BN (5*5*16)
+            nn.LeakyReLU(inplace=True),
         )
         self.max_pool = nn.MaxPool2d(2,stride=2,padding=0)
         self.conv2 = nn.Sequential(
@@ -30,8 +33,8 @@ class CNNModel(nn.Module):
                 padding=1,
                 bias=False
             ),
-            nn.BatchNorm2d(128),  # 批量归一化
-            nn.LeakyReLU(inplace=True),  # 激活函数
+            nn.BatchNorm2d(128),
+            nn.LeakyReLU(inplace=True),
         )
         self.conv3 = nn.Sequential(
             nn.Conv2d(
@@ -42,8 +45,8 @@ class CNNModel(nn.Module):
                 padding=1,
                 bias=False
             ),
-            nn.BatchNorm2d(256),  # 批量归一化 (3 * 3 * 64)
-            nn.LeakyReLU(inplace=True),  # 激活函数
+            nn.BatchNorm2d(256),
+            nn.LeakyReLU(inplace=True),
         )
         self.conv4 = nn.Sequential(
             nn.Conv2d(
@@ -54,8 +57,8 @@ class CNNModel(nn.Module):
                 padding=1,
                 bias=False
             ),
-            nn.BatchNorm2d(512),  # 批量归一化
-            nn.LeakyReLU(inplace=True),  # 激活函数
+            nn.BatchNorm2d(512),
+            nn.LeakyReLU(inplace=True),
 
         )
         self.drop_out = nn.Dropout(p=0., inplace=False)
@@ -68,8 +71,8 @@ class CNNModel(nn.Module):
                 padding=1,
                 bias=False
             ),
-            nn.BatchNorm2d(1024),  # 批量归一化
-            nn.LeakyReLU(),  # 激活函数
+            nn.BatchNorm2d(1024),
+            nn.LeakyReLU(),
         )
         self.conv6 = nn.Sequential(
             nn.Conv2d(
@@ -80,15 +83,12 @@ class CNNModel(nn.Module):
                 padding=1,
                 bias=False
             ),
-            nn.BatchNorm2d(2048),  # 批量归一化
-            nn.LeakyReLU(),  # 激活函数
+            nn.BatchNorm2d(2048),
+            nn.LeakyReLU(),
         )
         self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(2048, num_classes)
 
-    """
-    正向传播
-    """
 
     def forward(self, x):
         x = self.conv1(x)

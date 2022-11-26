@@ -24,7 +24,6 @@ def load_data(random_state, label_col_name):
     # x_12 = X[label12.index]
     # X = np.concatenate((x_10, x_11, x_12), axis=0)
     # Y = pd.concat([label10, label11, label12])
-    # 总共2549个样本，划分1223个样本做训练集，306个样本做测试集，1020个样本做验证集
     x_train_test, x_valid, y_train_test, y_valid = train_test_split(X, Y, random_state=random_state, test_size=0.2)
     x_train, x_test, y_train, y_test = train_test_split(x_train_test, y_train_test, random_state=random_state,
                                                         test_size=0.2)

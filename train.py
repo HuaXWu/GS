@@ -17,6 +17,10 @@ import CNN_model
 writer = SummaryWriter(log_dir="./runs/CNN/")
 
 
+"""
+ train function.
+ choice the dataloader and model by yourself.
+"""
 def train_func(args):
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     print(args)
@@ -46,10 +50,9 @@ def train_func(args):
         else:
             raise FileNotFoundError("not found weights file: {}".format(args.weights))
 
-    # 是否冻结权重
+    # freeze  weight.
     if args.freeze_layers:
         for name, para in net.named_parameters():
-            # 除最后的全连接层外，其他权重全部冻结
             if "head" not in name:
                 para.requires_grad_(False)
             else:
@@ -135,13 +138,12 @@ def train_func(args):
         # writer.add_scalar(tags[4], train_var, epoch)
         writer.add_scalar(tags[9], optimizer.param_groups[0]["lr"], epoch)
 
-        # 模型保存 做迁移学习
+        # save the pth
         # best_corr = val_acc
         # if best_corr > best_acc:
         #     best_acc = best_corr
         #     torch.save(net.state_dict(), save_path)
 
-        # 验证集
     print("train{}\n{}\ntest{}\n{}\nvalid{}\n{}\n".format(
         all_train_loss, all_train_corr, all_test_loss, all_test_corr, all_valid_loss, all_valid_corr))
     print(all_scheduler)
@@ -154,7 +156,7 @@ if __name__ == '__main__':
     parser.add_argument('--lr', type=float, default=0.001)
     parser.add_argument('--lrf', type=float, default=0.001)
 
-    # 预训练权重
+    # pre-train pth
     parser.add_argument('--weights', type=str, default='',
                         help='initial weights path')
     parser.add_argument('--freeze-layers', type=bool, default=False)

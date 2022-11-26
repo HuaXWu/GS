@@ -2,6 +2,10 @@ import torch.nn as nn
 import torch
 
 
+"""
+date 2022.04.05
+by wuhx resnet model
+"""
 class BasicBlock(nn.Module):
     expansion = 1
 
@@ -37,12 +41,7 @@ class BasicBlock(nn.Module):
 
 
 class Bottleneck(nn.Module):
-    """
-    注意：原论文中，在虚线残差结构的主分支上，第一个1x1卷积层的步距是2，第二个3x3卷积层步距是1。
-    但在pytorch官方实现过程中是第一个1x1卷积层的步距是1，第二个3x3卷积层步距是2，
-    这么做的好处是能够在top1上提升大概0.5%的准确率。
-    可参考Resnet v1.5 https://ngc.nvidia.com/catalog/model-scripts/nvidia:resnet_50_v1_5_for_pytorch
-    """
+
     expansion = 4
 
     def __init__(self, in_channel, out_channel, stride=1, downsample=None,
@@ -103,7 +102,7 @@ class ResNet(nn.Module):
         self.groups = groups
         self.width_per_group = width_per_group
 
-        # 输入维度修改处
+        # in_channels/
         self.conv1 = nn.Conv2d(3, self.in_channel, kernel_size=3, stride=1,
                                padding=2, bias=False)
         self.bn1 = nn.BatchNorm2d(self.in_channel)
@@ -178,22 +177,18 @@ def resnet14(num_classes: int, include_top=True):
 
 
 def resnet34(num_classes: int, include_top=True):
-    # https://download.pytorch.org/models/resnet34-333f7ec4.pth
     return ResNet(BasicBlock, [3, 4, 6, 3], num_classes=num_classes, include_top=include_top)
 
 
 def resnet50(num_classes: int, include_top=True):
-    # https://download.pytorch.org/models/resnet50-19c8e357.pth
     return ResNet(Bottleneck, [3, 4, 6, 3], num_classes=num_classes, include_top=include_top)
 
 
 def resnet101(num_classes: int, include_top=True):
-    # https://download.pytorch.org/models/resnet101-5d3b4d8f.pth
     return ResNet(Bottleneck, [3, 4, 23, 3], num_classes=num_classes, include_top=include_top)
 
 
 def resnext50_32x4d(num_classes: int, include_top=True):
-    # https://download.pytorch.org/models/resnext50_32x4d-7cdf4587.pth
     groups = 32
     width_per_group = 4
     return ResNet(Bottleneck, [3, 4, 6, 3],
@@ -204,7 +199,6 @@ def resnext50_32x4d(num_classes: int, include_top=True):
 
 
 def resnext101_32x8d(num_classes: int, include_top=True):
-    # https://download.pytorch.org/models/resnext101_32x8d-8ba56ff5.pth
     groups = 32
     width_per_group = 8
     return ResNet(Bottleneck, [3, 4, 23, 3],
