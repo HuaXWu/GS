@@ -5,6 +5,7 @@ import torch
 """
 date 2022.04.05
 by wuhx resnet model
+details in He K, Zhang X, Ren S, et al. Deep residual learning for image recognition[C]//Proceedings of the IEEE conference on computer vision and pattern recognition. 2016: 770-778.
 """
 class BasicBlock(nn.Module):
     expansion = 1

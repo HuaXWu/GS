@@ -90,6 +90,9 @@ class CNNModel(nn.Module):
         self.fc = nn.Linear(2048, num_classes)
 
 
+    """
+        Forward propagation section
+    """
     def forward(self, x):
         x = self.conv1(x)
         x = self.max_pool(x)

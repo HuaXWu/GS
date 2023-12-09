@@ -96,7 +96,7 @@ def train_func(args):
         print("=====train_avg_loss is {}, train_avg_corr is {} train_val is {}=====".
               format(train_loss, train_acc, train_val))
 
-        # test
+        # validation
         test_loss, test_acc, test_val = utils.train_one_epoch(model=net,
                                                               optimizer=optimizer,
                                                        data_loader=test_loader,
@@ -106,7 +106,7 @@ def train_func(args):
         print("=====test_avg_loss is {}, test_avg_corr is {} test_val is{}=====".
               format(test_loss, test_acc, test_val))
 
-        # valid
+        # testing
 
         val_loss, val_acc, valid_variance = utils.evaluate(model=net,
                                                            data_loader=valid_loader,
@@ -116,6 +116,7 @@ def train_func(args):
                                                            )
 
         lr_scheduler.step()
+        # add params to tensorboard for visualization
         all_train_loss.append(train_loss.item())
         all_train_corr.append(train_acc.item())
         all_test_loss.append(test_loss.item())
@@ -138,7 +139,7 @@ def train_func(args):
         # writer.add_scalar(tags[4], train_var, epoch)
         writer.add_scalar(tags[9], optimizer.param_groups[0]["lr"], epoch)
 
-        # save the pth
+        # save model
         # best_corr = val_acc
         # if best_corr > best_acc:
         #     best_acc = best_corr
@@ -150,9 +151,15 @@ def train_func(args):
     print("Finish train")
 
 
+"""
+All params
+"""
 if __name__ == '__main__':
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('--epochs', type=int, default=50)
+    # train epochs
+    parser.add_argument('--epochs', type=int, default=100)
+    # learning rate
     parser.add_argument('--lr', type=float, default=0.001)
     parser.add_argument('--lrf', type=float, default=0.001)
 
@@ -161,8 +168,10 @@ if __name__ == '__main__':
                         help='initial weights path')
     parser.add_argument('--freeze-layers', type=bool, default=False)
     parser.add_argument('--device', default='cuda:0', help='device id (i.e. 0 or 0,1 or cpu)')
+    # weight decay
     parser.add_argument('--wd', type=float, default=5e-3)
     parser.add_argument('--rds', type=int, default=12)
+    # save model
     parser.add_argument('--save_patch', type=str, default="./weights/resnext50_32x4d-pig_bf_01_tt.pth")
     parser.add_argument('--num_classes', type=int, default=1)
     parser.add_argument('--label', type=str, default="label")

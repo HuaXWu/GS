@@ -46,17 +46,17 @@ def to_tensor_loader(X_train, X_test, y_train, y_test, ):
     # X_train = transforms.ToPILImage(X_train)
     # X_train = transforms.Resize(224)(X_train)
     # X_train = transforms.ToTensor()(X_train)
-    X_train = transforms.Normalize([0.4337, 0.2384, 0.3279], [0.4956, 0.4261, 0.4695])(X_train)
+    # X_train = transforms.Normalize([0.4337, 0.2384, 0.3279], [0.4956, 0.4261, 0.4695])(X_train)
     train_tensor = data.TensorDataset(X_train, y_train)
 
     X_test = X_test.type(torch.float32)
     y_test = y_test.type(torch.float32)
-    X_test = transforms.Normalize([0.4337, 0.2384, 0.3279], [0.4956, 0.4261, 0.4695])(X_test)
+    # X_test = transforms.Normalize([0.4337, 0.2384, 0.3279], [0.4956, 0.4261, 0.4695])(X_test)
     test_tensor = data.TensorDataset(X_test, y_test)
 
     # step 5 to dataloader
-    train_loader = data.DataLoader(train_tensor, batch_size=40, shuffle=True)
-    test_loader = data.DataLoader(test_tensor, batch_size=20, shuffle=True)
+    train_loader = data.DataLoader(train_tensor, batch_size=16, shuffle=True)
+    test_loader = data.DataLoader(test_tensor, batch_size=8, shuffle=True)
     return train_loader, test_loader
 
 

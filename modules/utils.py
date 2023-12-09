@@ -9,7 +9,8 @@ import json
 
 """
 date 2022.03.01
-by wuhx  utils
+by wuhx  Training script
+
 """
 
 def train_one_epoch_classify(model, optimizer, data_loader, device, epoch, lr_scheduler):
@@ -22,6 +23,9 @@ def train_one_epoch_classify(model, optimizer, data_loader, device, epoch, lr_sc
     data_loader = tqdm(data_loader, file=sys.stdout)
     step = 0
     for step, data in enumerate(data_loader):
+        """
+        load data
+        """
         images, labels = data
         optimizer.zero_grad()
         sample_num += images.shape[0]
@@ -93,6 +97,9 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, lr_scheduler):
     train_bar = tqdm(data_loader, file=sys.stdout)
     for step, data in enumerate(train_bar):
         x_train, y_train = data
+        """
+        load data
+        """
         legit = model(x_train.to(device))
         y_train = y_train.to(device)
         loss = loss_function(legit, y_train)
@@ -115,6 +122,9 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, lr_scheduler):
         optimizer.step()
         optimizer.zero_grad()
         lr_scheduler.step()
+        """
+        early-stopping
+        """
         if not torch.isfinite(loss):
             print('WARNING: non-finite loss, ending training ', loss)
             sys.exit(1)
